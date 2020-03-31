@@ -2,13 +2,28 @@ var tempoInicial = $("#tempo-digitacao").text();
 var campo = $(".campo-digitacao");
 
 /* Atalho para a função ready é utilizar: $(function(){ // Código omitido para toda vez que incializar a página // }); */
-$(document).ready(function () {
+/* $(document).ready(function () { */
+$(function(){
     atualizaTamanhoFrase();
     incializaContadores();
     inicializaCronometro();
     inicializaMarcadores();
     $("#botao-reiniciar").click(reiniciaJogo); /* A função click é um atalho do jQuery ao invés de .on("click", function({ // Código omitido })); */
+    atualizaPlacar();
+    $("#usuarios").selectize({
+        create: true,
+        sortField: 'text'
+    });
+
+    $('.tooltip').tooltipster({
+        trigger: "custom"
+    });
 });
+
+function atualizaTempoInicial(tempo) {
+    tempoInicial = tempo;
+    $("#tempo-digitacao").text(tempo);
+}
 
 function atualizaTamanhoFrase() {
     var frase = jQuery(".frase").text();
@@ -80,12 +95,11 @@ function incializaContadores() {
  * 
  */
 function inicializaCronometro() {
-    var tempoRestante = $("#tempo-digitacao").text();
     campo.one("focus", function () {
+        var tempoRestante = $("#tempo-digitacao").text();
         $("#botao-reiniciar").attr("disabled", true);
         var cronometroId = setInterval(function () {
             tempoRestante--;
-            console.log(tempoRestante);
             $("#tempo-digitacao").text(tempoRestante);
             if (tempoRestante < 1) {
                 clearInterval(cronometroId);
@@ -103,8 +117,8 @@ function finalizaJogo() {
 }
 
 function inicializaMarcadores() {
-    var frase = $(".frase").text();
     campo.on("input", function () {
+        var frase = $(".frase").text();
         var digitado = campo.val();
         var comparavel = frase.substr(0, digitado.length);
         if (digitado == comparavel) {
